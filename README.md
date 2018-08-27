@@ -7,4 +7,4 @@ this sample usage Pion WebRTC https://github.com/pions/webrtc stream RTSP camera
 3) go run *.go
 4) open browser http://127.0.0.1:8080
 
-you can edit 	url := "rtsp://admin:1234567@171.25.235.18/mpeg4" to any you stream
+you can edit 	url := "rtsp://admin:123456@171.25.232.42:1554/mpeg4cif" to any you stream
