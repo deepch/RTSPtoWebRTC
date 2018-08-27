@@ -35,15 +35,17 @@ func main() {
 			if len(sps) == 0 {
 				sps = payload
 			}
-			writeNALU(true, int(ts), payload)
+			//	writeNALU(true, int(ts), payload)
 		} else if nalType == 8 {
 			if len(pps) == 0 {
 				pps = payload
 			}
-			writeNALU(true, int(ts), payload)
+			//	writeNALU(true, int(ts), payload)
 		} else if nalType == 5 {
 			syncCount++
-			writeNALU(true, int(ts), payload)
+			lastkeys := append([]byte("\000\000\001"+string(sps)+"\000\000\001"+string(pps)+"\000\000\001"), payload...)
+
+			writeNALU(true, int(ts), lastkeys)
 		} else {
 			if syncCount > 0 {
 				writeNALU(false, int(ts), payload)
