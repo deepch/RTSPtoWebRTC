@@ -5,7 +5,7 @@ import (
 	"log"
 
 	rtsp "github.com/deepch/sample_rtsp"
-	"github.com/pions/webrtc"
+	"github.com/pions/webrtc/pkg/media"
 )
 
 var (
@@ -15,7 +15,8 @@ var (
 
 func main() {
 	go StartHTTPServer()
-	url := "rtsp://admin:123456@171.25.232.42:1554/mpeg4cif"
+	// url := "rtsp://admin:123456@171.25.232.42:1554/mpeg4cif"
+	url := "rtsp://admin:admin@192.168.2.161"
 	sps := []byte{}
 	pps := []byte{}
 	fuBuffer := []byte{}
@@ -25,8 +26,11 @@ func main() {
 	syncCount := 0
 	preTS := 0
 	writeNALU := func(sync bool, ts int, payload []byte) {
-		if DataChanelTest != nil && preTS != 0 {
-			DataChanelTest <- webrtc.RTCSample{Data: payload, Samples: uint32(ts - preTS)}
+		// if DataChanelTest != nil && preTS != 0 {
+		// 	DataChanelTest <- webrtc.RTCSample{Data: payload, Samples: uint32(ts - preTS)}
+		// }
+		if videoTrack != nil && preTS != 0 {
+			videoTrack.WriteSample(media.Sample{Data: payload, Samples: uint32(ts - preTS)})
 		}
 		preTS = ts
 	}

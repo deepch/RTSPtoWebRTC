@@ -3,16 +3,18 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 
 	"encoding/base64"
 
 	"github.com/gorilla/mux"
 	"github.com/pions/webrtc"
-	"github.com/pions/webrtc/pkg/ice"
+	//ice "github.com/pions/webrtc/internal/ice"
 )
 
-var DataChanelTest chan<- webrtc.RTCSample
+// var DataChanelTest chan<- webrtc.RTCSample
+var videoTrack *webrtc.Track
 
 func StartHTTPServer() {
 	r := mux.NewRouter()
@@ -34,9 +36,10 @@ func HTTPHome(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	webrtc.RegisterDefaultCodecs()
-	peerConnection, err := webrtc.New(webrtc.RTCConfiguration{
-		ICEServers: []webrtc.RTCICEServer{
+	// webrtc.RegisterDefaultCodecs()
+	//peerConnection, err := webrtc.New(webrtc.RTCConfiguration{
+	peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
+		ICEServers: []webrtc.ICEServer{
 			{
 				URLs: []string{"stun:stun.l.google.com:19302"},
 			},
@@ -45,10 +48,10 @@ func HTTPHome(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	peerConnection.OnICEConnectionStateChange = func(connectionState ice.ConnectionState) {
+	peerConnection.OnICEConnectionStateChange(func(connectionState webrtc.ICEConnectionState) {
 		fmt.Printf("Connection State has changed %s \n", connectionState.String())
-	}
-	vp8Track, err := peerConnection.NewRTCTrack(webrtc.DefaultPayloadTypeH264, "video", "pion2")
+	})
+	vp8Track, err := peerConnection.NewTrack(webrtc.DefaultPayloadTypeH264, rand.Uint32(), "video", "pion2")
 	if err != nil {
 		log.Println(err)
 		return
@@ -58,9 +61,9 @@ func HTTPHome(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	offer := webrtc.RTCSessionDescription{
-		Type: webrtc.RTCSdpTypeOffer,
-		Sdp:  string(sd),
+	offer := webrtc.SessionDescription{
+		Type: webrtc.SDPTypeOffer,
+		SDP:  string(sd),
 	}
 	if err := peerConnection.SetRemoteDescription(offer); err != nil {
 		log.Println(err)
@@ -71,6 +74,7 @@ func HTTPHome(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	w.Write([]byte(base64.StdEncoding.EncodeToString([]byte(answer.Sdp))))
-	DataChanelTest = vp8Track.Samples
+	w.Write([]byte(base64.StdEncoding.EncodeToString([]byte(answer.SDP))))
+	// DataChanelTest = vp8Track.Samples
+	videoTrack = vp8Track
 }
