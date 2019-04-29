@@ -5,7 +5,7 @@ import (
 	"log"
 
 	rtsp "github.com/deepch/sample_rtsp"
-	"github.com/pions/webrtc/pkg/media"
+	"github.com/pion/webrtc/v2/pkg/media"
 )
 
 var (

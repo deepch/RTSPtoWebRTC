@@ -9,7 +9,7 @@ import (
 	"encoding/base64"
 
 	"github.com/gorilla/mux"
-	"github.com/pions/webrtc"
+	"github.com/pion/webrtc/v2"
 	//ice "github.com/pions/webrtc/internal/ice"
 )
 
