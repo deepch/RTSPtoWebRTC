@@ -22,7 +22,7 @@ func StartHTTPServer() {
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("static/"))))
 
 	go func() {
-		err := http.ListenAndServe(":8080", r)
+		err := http.ListenAndServe(":25000", r)
 		if err != nil {
 		}
 	}()
