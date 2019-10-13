@@ -16,7 +16,7 @@ var (
 func main() {
 	go StartHTTPServer()
 	// url := "rtsp://admin:123456@171.25.232.42:1554/mpeg4cif"
-	url := "rtsp://admin:admin@192.168.2.161"
+	url := "rtsp://admin:1234567@171.25.235.18/mpeg4"
 	sps := []byte{}
 	pps := []byte{}
 	fuBuffer := []byte{}
