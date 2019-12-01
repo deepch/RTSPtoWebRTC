@@ -1,6 +1,8 @@
 # RTSPtoWebRTC
 
 this sample usage Pion WebRTC https://github.com/pions/webrtc stream RTSP camera to browser
+if you need to place the camera on the site you can use https://github.com/deepch/RTSPtoWSMP4f
+
 
 1) go get github.com/deepch/RTSPtoWebRTC
 2) cd RTSPtoWebRTC
