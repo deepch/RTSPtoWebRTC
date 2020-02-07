@@ -1,12 +1,54 @@
 # RTSPtoWebRTC
 
-this sample usage Pion WebRTC https://github.com/pions/webrtc stream RTSP camera to browser
-if you need to place the camera on the site you can use https://github.com/deepch/RTSPtoWSMP4f
+RTSP Stream to WebBrowser over WebRTC based on Pion
 
+![RTSPtoWebRTC image](doc/demo4.png)
 
-1) go get github.com/deepch/RTSPtoWebRTC
-2) cd RTSPtoWebRTC
-3) you can edit 	url := "rtsp://admin:123456@171.25.232.42:1554/mpeg4cif" to any you stream
-4) go run *.go
-5) open browser http://127.0.0.1:8080
+## Installation
+1.
+```bash
+go get github.com/deepch/RTSPtoWebRTC
+```
+2.
+```bash
+cd src/github.com/deepch/RTSPtoWebRTC
+```
+3.
+```bash
+go run *.go
+```
+4.
+```bash
+open web browser http://127.0.0.1:8083 work google chrome
+```
 
+## Configuration
+
+### Edit file config.json
+
+format:
+
+```bash
+{
+  "server": {
+    "http_port": ":8083"
+  },
+  "streams": {
+    "demo1": {
+      "url": "rtsp://170.93.143.139/rtplive/470011e600ef003a004ee33696235daa"
+    },
+    "demo2": {
+      "url": "rtsp://170.93.143.139/rtplive/470011e600ef003a004ee33696235daa"
+    },
+    "demo3": {
+      "url": "rtsp://170.93.143.139/rtplive/470011e600ef003a004ee33696235daa"
+    }
+  }
+}
+```
+
+## Limitations
+
+Video Codecs Supported: H264
+
+Audio Codecs Supported: none

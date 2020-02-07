@@ -1,0 +1,35 @@
+<html>
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="Last-Modified" content="0">
+<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<link rel="stylesheet" href="/static/css/bootstrap.min.css">
+<script type="text/javascript" src="/static/js/jquery-3.4.1.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/adapter-latest.js"></script>
+
+<h2 align=center>
+    Play Stream {{ .suuid }}
+</h2>
+<div class="container">
+  <div class="row">
+    <div class="col-3">
+      <div class="list-group">
+  {{ range .suuidMap }}
+    <a href="/player/{{ . }}" id="{{ . }}" name="{{ . }}" class="list-group-item list-group-item-action">{{ . }}</a>
+  {{ end }}
+</div>
+    </div>
+        <div class="col">
+            <input type="hidden" name="suuid" id="suuid" value="{{ .suuid }}">
+            <input type="hidden" name="port" id="port" value="{{ .port }}">
+            <input type="hidden" id="localSessionDescription" readonly="true">
+            <input type="hidden" id="remoteSessionDescription">
+            <div id="remoteVideos"></div>
+            <button onclick="window.startSession()"> Start Session </button>
+            <div id="div"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/static/js/app.js?ver={{ .version }}"></script>
+</html>

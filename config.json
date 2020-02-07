@@ -1,0 +1,10 @@
+{
+  "server": {
+    "http_port": ":8083"
+  },
+  "streams": {
+    "demo1": {
+      "url": "rtsp://170.93.143.139/rtplive/470011e600ef003a004ee33696235daa"
+    }
+  }
+}
