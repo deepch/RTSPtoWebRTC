@@ -3,6 +3,13 @@
 RTSP Stream to WebBrowser over WebRTC based on Pion
 
 full native! not use ffmpeg or gstreamer
+if you need RTSPtoWSMP4f use https://github.com/deepch/RTSPtoWSMP4f
+
+## Team
+
+Deepch - https://github.com/deepch streaming developer
+
+Dmitry - https://github.com/vdalex25 web developer
 
 ![RTSPtoWebRTC image](doc/demo4.png)
 
