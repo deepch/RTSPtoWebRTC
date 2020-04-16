@@ -25,7 +25,7 @@ cd src/github.com/deepch/RTSPtoWebRTC
 ```
 3.
 ```bash
-go run *.go
+go run .
 ```
 4.
 ```bash
