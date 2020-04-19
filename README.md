@@ -61,4 +61,4 @@ format:
 
 Video Codecs Supported: H264
 
-Audio Codecs Supported: none
+Audio Codecs Supported: alaw and mulaw 
