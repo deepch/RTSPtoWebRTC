@@ -3,16 +3,18 @@ package main
 import (
 	"encoding/base64"
 	"fmt"
+	"log"
+	"math/rand"
+	"net/http"
+	"sort"
+	"strings"
+	"time"
+
 	"github.com/deepch/vdk/av"
 	"github.com/deepch/vdk/codec/h264parser"
 	"github.com/gin-gonic/gin"
 	"github.com/pion/webrtc/v2"
 	"github.com/pion/webrtc/v2/pkg/media"
-	"log"
-	"math/rand"
-	"net/http"
-	"sort"
-	"time"
 )
 
 func serveHTTP() {
@@ -60,32 +62,40 @@ func reciver(c *gin.Context) {
 		pps := codecs[0].(h264parser.CodecData).PPS()
 		sd, err := base64.StdEncoding.DecodeString(data)
 		if err != nil {
-			log.Println(err)
+			log.Println("decode SDP error", err)
 			return
 		}
+
 		peerConnection, err := webrtc.NewPeerConnection(webrtc.Configuration{
-			ICEServers: []webrtc.ICEServer{
-				{
-					URLs: []string{"stun:stun.l.google.com:19302"},
-				},
-			},
+			//	ICEServers: []webrtc.ICEServer{
+			//		{
+			//URLs: []string{"stun:stun.l.google.com:19302"},
+			//		},
+			///	},
 		})
 		if err != nil {
 			panic(err)
 		}
-		videoTrack, err := peerConnection.NewTrack(webrtc.DefaultPayloadTypeH264, rand.Uint32(), "video", suuid+"_video")
+		videoTrack, err := peerConnection.NewTrack(webrtc.DefaultPayloadTypeH264, rand.Uint32(), "video", suuid+"video")
 		_, err = peerConnection.AddTrack(videoTrack)
 		if err != nil {
 			log.Println(err)
 			return
 		}
+		_, err = peerConnection.AddTransceiverFromTrack(videoTrack,
+			webrtc.RtpTransceiverInit{
+				Direction: webrtc.RTPTransceiverDirectionSendonly,
+			},
+		)
+		payloadType := videoTrack.PayloadType
+		log.Fatalln(payloadType)
 		var audioTrack *webrtc.Track
 		if len(codecs) > 1 && (codecs[1].Type() == av.PCM_ALAW || codecs[1].Type() == av.PCM_MULAW) {
 			switch codecs[1].Type() {
 			case av.PCM_ALAW:
-				audioTrack, err = peerConnection.NewTrack(webrtc.DefaultPayloadTypePCMA, rand.Uint32(), "audio", suuid+"_audio")
+				audioTrack, err = peerConnection.NewTrack(webrtc.DefaultPayloadTypePCMA, rand.Uint32(), "audio", suuid+"audio")
 			case av.PCM_MULAW:
-				audioTrack, err = peerConnection.NewTrack(webrtc.DefaultPayloadTypePCMU, rand.Uint32(), "audio", suuid+"_audio")
+				audioTrack, err = peerConnection.NewTrack(webrtc.DefaultPayloadTypePCMU, rand.Uint32(), "audio", suuid+"audio")
 			}
 			if err != nil {
 				log.Println(err)
@@ -102,15 +112,21 @@ func reciver(c *gin.Context) {
 			SDP:  string(sd),
 		}
 		if err := peerConnection.SetRemoteDescription(offer); err != nil {
-			log.Println(err)
+			log.Println("SetRemoteDescription error", err, string(offer.SDP))
 			return
 		}
 		answer, err := peerConnection.CreateAnswer(nil)
 		if err != nil {
-			log.Println(err)
+			log.Println("CreateAnswer error", err)
 			return
 		}
-		c.Writer.Write([]byte(base64.StdEncoding.EncodeToString([]byte(answer.SDP))))
+		//spd_string := string(answer.SDP)
+		//strings.
+		deep := strings.Replace(string(answer.SDP), "192.168.33.33", "171.25.233.50", -1)
+		//deep = strings.Replace(string(deep), "192.168.33.33", "Sendonly", -1)
+		//Sendonly
+		//log.Println(string(answer.SDP), string(deep))
+		c.Writer.Write([]byte(base64.StdEncoding.EncodeToString([]byte(deep))))
 		go func() {
 			control := make(chan bool, 10)
 			conected := make(chan bool, 10)
