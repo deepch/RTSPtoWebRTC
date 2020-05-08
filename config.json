@@ -4,7 +4,7 @@
   },
   "streams": {
     "demo1": {
-      "url": "rtsp://184.80.5.148:554/axis-media/media.amp?videocodec=h264"
+      "url": "rtsp://171.25.232.15/f7404d80f4a14ffe93ba72c72523920d"
     }
   }
 }

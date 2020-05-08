@@ -12,6 +12,8 @@ Deepch - https://github.com/deepch streaming developer
 
 Dmitry - https://github.com/vdalex25 web developer
 
+Now test work on (chrome, safari, firefox) no MAC OS
+
 ![RTSPtoWebRTC image](doc/demo4.png)
 
 ## Installation
@@ -29,7 +31,7 @@ go run .
 ```
 4.
 ```bash
-open web browser http://127.0.0.1:8083 work google chrome
+open web browser http://127.0.0.1:8083 work chrome, safari, firefox
 ```
 
 ## Configuration

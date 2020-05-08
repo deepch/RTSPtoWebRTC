@@ -19,7 +19,7 @@ func serveStreams() {
 					time.Sleep(5 * time.Second)
 					continue
 				}
-				session.RtpKeepAliveTimeout = time.Duration(10 * time.Second)
+				session.RtpKeepAliveTimeout = 10 * time.Second
 				if err != nil {
 					log.Println(name, err)
 					time.Sleep(5 * time.Second)
@@ -40,7 +40,10 @@ func serveStreams() {
 					}
 					Config.cast(name, pkt)
 				}
-				session.Close()
+				err = session.Close()
+				if err != nil {
+					log.Println("session Close error", err)
+				}
 				log.Println(name, "reconnect wait 5s")
 				time.Sleep(5 * time.Second)
 			}
