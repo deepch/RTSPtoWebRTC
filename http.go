@@ -252,7 +252,10 @@ func reciver(c *gin.Context) {
 						select {
 						case <-timer1.C:
 							log.Println("Client Close Keep-Alive Timer")
-							peerConnection.Close()
+							err = peerConnection.Close()
+							if err != nil {
+								log.Println("peerConnection Close error", err)
+							}
 						case <-control:
 							return
 						case pck := <-ch:
