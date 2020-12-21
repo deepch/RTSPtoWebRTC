@@ -41,7 +41,7 @@ func serveHTTP() {
 			"version":  time.Now().String(),
 		})
 	})
-	router.POST("/recive", reciver)
+	router.POST("/receive", receiver)
 	router.GET("/codec/:uuid", func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
 		if Config.ext(c.Param("uuid")) {
@@ -65,7 +65,7 @@ func serveHTTP() {
 		log.Fatalln("Start HTTP Server error", err)
 	}
 }
-func reciver(c *gin.Context) {
+func receiver(c *gin.Context) {
 	c.Header("Access-Control-Allow-Origin", "*")
 	data := c.PostForm("data")
 	suuid := c.PostForm("suuid")
@@ -85,7 +85,7 @@ func reciver(c *gin.Context) {
 		pps := codecs[0].(h264parser.CodecData).PPS()
 		/*
 
-			Recive Remote SDP as Base64
+			Receive Remote SDP as Base64
 
 		*/
 		sd, err := base64.StdEncoding.DecodeString(data)
