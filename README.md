@@ -19,15 +19,21 @@ Now test work on (chrome, safari, firefox) no MAC OS
 ## Installation
 1.
 ```bash
-go get github.com/deepch/RTSPtoWebRTC
+$ export GO111MODULE=on
+$ go get github.com/deepch/RTSPtoWebRTC
 ```
 2.
 ```bash
-cd src/github.com/deepch/RTSPtoWebRTC
+$ cd ~/go/src/github.com/deepch/RTSPtoWebRTC
 ```
 3.
 ```bash
-go run .
+$ go run .
+```
+or
+```bash
+$ go build .
+$ ./RTSPtoWebRTC
 ```
 4.
 ```bash
