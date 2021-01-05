@@ -44,8 +44,9 @@ function getCodecInfo() {
   $.get("/codec/" + suuid, function(data) {
     try {
       data = JSON.parse(data);
+      console.log(data)
       if (data.length > 1) {
-        log('add audio Transceiver')
+        console.log('add audio Transceiver')
         pc.addTransceiver('audio', {
           'direction': 'sendrecv'
         })
