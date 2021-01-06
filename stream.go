@@ -1,52 +1,58 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"time"
 
-	"github.com/deepch/vdk/format/rtsp"
+	"github.com/deepch/vdk/format/rtspv2"
+)
+
+var (
+	ErrorStreamExitNoVideoOnStream = errors.New("Stream Exit No Video On Stream")
+	ErrorStreamExitRtspDisconnect  = errors.New("Stream Exit Rtsp Disconnect")
 )
 
 func serveStreams() {
 	for k, v := range Config.Streams {
-		go func(name, url string) {
-			for {
-				log.Println(name, "connect", url)
-				rtsp.DebugRtsp = true
-				session, err := rtsp.Dial(url)
-				if err != nil {
-					log.Println(name, err)
-					time.Sleep(5 * time.Second)
-					continue
-				}
-				session.RtpKeepAliveTimeout = 10 * time.Second
-				if err != nil {
-					log.Println(name, err)
-					time.Sleep(5 * time.Second)
-					continue
-				}
-				codec, err := session.Streams()
-				if err != nil {
-					log.Println(name, err)
-					time.Sleep(5 * time.Second)
-					continue
-				}
-				Config.coAd(name, codec)
-				for {
-					pkt, err := session.ReadPacket()
-					if err != nil {
-						log.Println(name, err)
-						break
-					}
-					Config.cast(name, pkt)
-				}
-				err = session.Close()
-				if err != nil {
-					log.Println("session Close error", err)
-				}
-				log.Println(name, "reconnect wait 5s")
-				time.Sleep(5 * time.Second)
+		go RTSPWorkerLoop(k, v.URL)
+	}
+}
+func RTSPWorkerLoop(name, url string) {
+	for {
+		err := RTSPWorker(name, url)
+		if err != nil {
+			log.Println(err)
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+}
+func RTSPWorker(name, url string) error {
+	keyTest := time.NewTimer(20 * time.Second)
+	RTSPClient, err := rtspv2.Dial(rtspv2.RTSPClientOptions{URL: url, DisableAudio: true, DialTimeout: 3 * time.Second, ReadWriteTimeout: 3 * time.Second, Debug: false})
+	if err != nil {
+		return err
+	}
+	defer RTSPClient.Close()
+	if RTSPClient.CodecData != nil {
+		Config.coAd(name, RTSPClient.CodecData)
+	}
+	for {
+		select {
+		case <-keyTest.C:
+			return ErrorStreamExitNoVideoOnStream
+		case signals := <-RTSPClient.Signals:
+			switch signals {
+			case rtspv2.SignalCodecUpdate:
+				Config.coAd(name, RTSPClient.CodecData)
+			case rtspv2.SignalStreamRTPStop:
+				return ErrorStreamExitRtspDisconnect
 			}
-		}(k, v.URL)
+		case packetAV := <-RTSPClient.OutgoingPacketQueue:
+			if packetAV.IsKeyFrame {
+				keyTest.Reset(20 * time.Second)
+			}
+			Config.cast(name, *packetAV)
+		}
 	}
 }
