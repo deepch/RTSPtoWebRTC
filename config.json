@@ -4,7 +4,7 @@
   },
   "streams": {
     "demo1": {
-      "url": "rtsp://171.25.232.11/8bd52e0892c44f5d8af5214520af3b9f"
+      "url": "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
     }
   }
 }

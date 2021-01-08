@@ -7,6 +7,8 @@ import (
 	"sort"
 	"time"
 
+	"github.com/deepch/vdk/av"
+
 	webrtc "github.com/deepch/vdk/format/webrtcv3"
 	"github.com/gin-gonic/gin"
 )
@@ -37,12 +39,21 @@ func serveHTTP() {
 	router.POST("/recive", HTTPAPIServerStreamWebRTC)
 	router.GET("/codec/:uuid", func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
+
 		if Config.ext(c.Param("uuid")) {
 			codecs := Config.coGe(c.Param("uuid"))
 			if codecs == nil {
 				return
 			}
-			b, err := json.Marshal(codecs)
+			var tmpCodec []av.CodecData
+			for _, codec := range codecs {
+				if codec.Type() != av.H264 && codec.Type() != av.PCM_ALAW && codec.Type() != av.PCM_MULAW {
+					log.Println("Codec Not Supported WebRTC ignore this track", codec.Type())
+					continue
+				}
+				tmpCodec = append(tmpCodec, codec)
+			}
+			b, err := json.Marshal(tmpCodec)
 			if err == nil {
 				_, err = c.Writer.Write(b)
 				if err != nil {

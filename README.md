@@ -70,3 +70,5 @@ format:
 Video Codecs Supported: H264
 
 Audio Codecs Supported: pcm alaw and pcm mulaw 
+
+[![paypal.me/AndreySemochkin](https://ionicabizau.github.io/badges/paypal.svg)](https://www.paypal.me/AndreySemochkin) - You can make one-time donations via PayPal. I'll probably buy a ~~coffee~~ tea. :tea:

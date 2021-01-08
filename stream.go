@@ -20,16 +20,17 @@ func serveStreams() {
 }
 func RTSPWorkerLoop(name, url string) {
 	for {
+		log.Println("Stream Try Connect", name)
 		err := RTSPWorker(name, url)
 		if err != nil {
 			log.Println(err)
 		}
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(1 * time.Second)
 	}
 }
 func RTSPWorker(name, url string) error {
 	keyTest := time.NewTimer(20 * time.Second)
-	RTSPClient, err := rtspv2.Dial(rtspv2.RTSPClientOptions{URL: url, DisableAudio: true, DialTimeout: 3 * time.Second, ReadWriteTimeout: 3 * time.Second, Debug: false})
+	RTSPClient, err := rtspv2.Dial(rtspv2.RTSPClientOptions{URL: url, DisableAudio: false, DialTimeout: 3 * time.Second, ReadWriteTimeout: 3 * time.Second, Debug: false})
 	if err != nil {
 		return err
 	}
