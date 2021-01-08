@@ -13,6 +13,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type JCodec struct {
+	Type string
+}
+
 func serveHTTP() {
 	router := gin.Default()
 	router.LoadHTMLGlob("web/templates/*")
@@ -45,13 +49,17 @@ func serveHTTP() {
 			if codecs == nil {
 				return
 			}
-			var tmpCodec []av.CodecData
+			var tmpCodec []JCodec
 			for _, codec := range codecs {
-				if codec.Type() != av.H264 && codec.Type() != av.PCM_ALAW && codec.Type() != av.PCM_MULAW {
+				if codec.Type() != av.H264 && codec.Type() != av.PCM_ALAW && codec.Type() != av.PCM_MULAW && codec.Type() != av.OPUS {
 					log.Println("Codec Not Supported WebRTC ignore this track", codec.Type())
 					continue
 				}
-				tmpCodec = append(tmpCodec, codec)
+				if codec.Type().IsVideo() {
+					tmpCodec = append(tmpCodec, JCodec{Type: "video"})
+				} else {
+					tmpCodec = append(tmpCodec, JCodec{Type: "audio"})
+				}
 			}
 			b, err := json.Marshal(tmpCodec)
 			if err == nil {
@@ -78,8 +86,12 @@ func HTTPAPIServerStreamWebRTC(c *gin.Context) {
 	}
 	codecs := Config.coGe(c.PostForm("suuid"))
 	if codecs == nil {
-		log.Println("Streamc Codec Not Found")
+		log.Println("Stream Codec Not Found")
 		return
+	}
+	var AudioOnly bool
+	if len(codecs) == 1 && codecs[0].Type().IsAudio() {
+		AudioOnly = true
 	}
 	muxerWebRTC := webrtc.NewMuxer()
 	answer, err := muxerWebRTC.WriteHeader(codecs, c.PostForm("data"))
@@ -104,11 +116,11 @@ func HTTPAPIServerStreamWebRTC(c *gin.Context) {
 				log.Println("noVideo")
 				return
 			case pck := <-ch:
-				if pck.IsKeyFrame {
+				if pck.IsKeyFrame || AudioOnly {
 					noVideo.Reset(10 * time.Second)
 					videoStart = true
 				}
-				if !videoStart {
+				if !videoStart && !AudioOnly {
 					continue
 				}
 				err = muxerWebRTC.WritePacket(pck)

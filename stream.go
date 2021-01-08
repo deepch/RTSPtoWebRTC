@@ -50,9 +50,7 @@ func RTSPWorker(name, url string) error {
 				return ErrorStreamExitRtspDisconnect
 			}
 		case packetAV := <-RTSPClient.OutgoingPacketQueue:
-			if packetAV.IsKeyFrame {
-				keyTest.Reset(20 * time.Second)
-			}
+			keyTest.Reset(20 * time.Second)
 			Config.cast(name, *packetAV)
 		}
 	}
