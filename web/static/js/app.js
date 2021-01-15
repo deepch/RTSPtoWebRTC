@@ -19,14 +19,6 @@ pc.ontrack = function(event) {
   stream.addTrack(event.track);
   videoElem.srcObject = stream;
   log(event.streams.length + ' track is delivered')
- // var el = document.createElement(event.track.kind)
- // el.srcObject = event.streams[0]
- // el.muted = true
- // el.autoplay = true
- // el.controls = true
- // el.width = 600
- // console.log(stream)
- // document.getElementById('remoteVideos').appendChild(el)
 }
 
 pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
