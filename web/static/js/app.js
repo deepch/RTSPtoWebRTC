@@ -73,7 +73,7 @@ function getCodecInfo() {
 let sendChannel = null;
 
 function getRemoteSdp() {
-  $.post("/recive", {
+  $.post("/receiver", {
     suuid: suuid,
     data: btoa(pc.localDescription.sdp)
   }, function(data) {

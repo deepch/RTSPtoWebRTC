@@ -40,7 +40,7 @@ func serveHTTP() {
 			"version":  time.Now().String(),
 		})
 	})
-	router.POST("/recive", HTTPAPIServerStreamWebRTC)
+	router.POST("/receiver", HTTPAPIServerStreamWebRTC)
 	router.GET("/codec/:uuid", func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
 		if Config.ext(c.Param("uuid")) {
