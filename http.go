@@ -43,8 +43,8 @@ func serveHTTP() {
 	router.POST("/recive", HTTPAPIServerStreamWebRTC)
 	router.GET("/codec/:uuid", func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
-
 		if Config.ext(c.Param("uuid")) {
+			Config.RunIFNotRun(c.Param("uuid"))
 			codecs := Config.coGe(c.Param("uuid"))
 			if codecs == nil {
 				return
@@ -84,6 +84,7 @@ func HTTPAPIServerStreamWebRTC(c *gin.Context) {
 		log.Println("Stream Not Found")
 		return
 	}
+	Config.RunIFNotRun(c.PostForm("suuid"))
 	codecs := Config.coGe(c.PostForm("suuid"))
 	if codecs == nil {
 		log.Println("Stream Codec Not Found")
@@ -93,7 +94,7 @@ func HTTPAPIServerStreamWebRTC(c *gin.Context) {
 	if len(codecs) == 1 && codecs[0].Type().IsAudio() {
 		AudioOnly = true
 	}
-	muxerWebRTC := webrtc.NewMuxer()
+	muxerWebRTC := webrtc.NewMuxer(webrtc.Options{ICEServers: Config.GetICEServers(), PortMin: Config.GetWebRTCPortMin(), PortMax: Config.GetWebRTCPortMax()})
 	answer, err := muxerWebRTC.WriteHeader(codecs, c.PostForm("data"))
 	if err != nil {
 		log.Println("WriteHeader", err)

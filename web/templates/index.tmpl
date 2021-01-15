@@ -25,7 +25,9 @@
             <input type="hidden" name="port" id="port" value="{{ .port }}">
             <input type="hidden" id="localSessionDescription" readonly="true">
             <input type="hidden" id="remoteSessionDescription">
-            <div id="remoteVideos"></div>
+            <div id="remoteVideos">
+                <video style="width:600px" id="videoElem" autoplay muted controls></video>
+            </div>
             <button onclick="startSession()"> Start Session </button>
             <div id="div"></div>
         </div>

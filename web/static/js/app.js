@@ -1,3 +1,5 @@
+let stream = new MediaStream();
+
 let suuid = $('#suuid').val();
 
 let config = {
@@ -14,19 +16,20 @@ let log = msg => {
 }
 
 pc.ontrack = function(event) {
+  stream.addTrack(event.track);
+  videoElem.srcObject = stream;
   log(event.streams.length + ' track is delivered')
-  var el = document.createElement(event.track.kind)
-  el.srcObject = event.streams[0]
-  el.muted = true
-  el.autoplay = true
-  el.controls = true
-  el.width = 600
-  document.getElementById('remoteVideos').appendChild(el)
+ // var el = document.createElement(event.track.kind)
+ // el.srcObject = event.streams[0]
+ // el.muted = true
+ // el.autoplay = true
+ // el.controls = true
+ // el.width = 600
+ // console.log(stream)
+ // document.getElementById('remoteVideos').appendChild(el)
 }
 
 pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
-
-
 
 async function handleNegotiationNeededEvent() {
   let offer = await pc.createOffer();
@@ -75,17 +78,12 @@ function getRemoteSdp() {
     data: btoa(pc.localDescription.sdp)
   }, function(data) {
     try {
-
       pc.setRemoteDescription(new RTCSessionDescription({
         type: 'answer',
         sdp: atob(data)
       }))
-
-
-
     } catch (e) {
       console.warn(e);
     }
-
   });
 }
