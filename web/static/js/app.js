@@ -36,7 +36,7 @@ $(document).ready(function() {
 
 
 function getCodecInfo() {
-  $.get("/codec/" + suuid, function(data) {
+  $.get("../codec/" + suuid, function(data) {
     try {
       data = JSON.parse(data);
     } catch (e) {
@@ -65,7 +65,7 @@ function getCodecInfo() {
 let sendChannel = null;
 
 function getRemoteSdp() {
-  $.post("/receiver", {
+  $.post("../receiver/"+ suuid, {
     suuid: suuid,
     data: btoa(pc.localDescription.sdp)
   }, function(data) {

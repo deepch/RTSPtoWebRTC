@@ -20,61 +20,73 @@ type JCodec struct {
 func serveHTTP() {
 	router := gin.Default()
 	router.LoadHTMLGlob("web/templates/*")
-	router.GET("/", func(c *gin.Context) {
-		fi, all := Config.list()
-		sort.Strings(all)
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"port":     Config.Server.HTTPPort,
-			"suuid":    fi,
-			"suuidMap": all,
-			"version":  time.Now().String(),
-		})
-	})
-	router.GET("/player/:suuid", func(c *gin.Context) {
-		_, all := Config.list()
-		sort.Strings(all)
-		c.HTML(http.StatusOK, "player.tmpl", gin.H{
-			"port":     Config.Server.HTTPPort,
-			"suuid":    c.Param("suuid"),
-			"suuidMap": all,
-			"version":  time.Now().String(),
-		})
-	})
-	router.POST("/receiver", HTTPAPIServerStreamWebRTC)
-	router.GET("/codec/:uuid", func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "*")
-		if Config.ext(c.Param("uuid")) {
-			Config.RunIFNotRun(c.Param("uuid"))
-			codecs := Config.coGe(c.Param("uuid"))
-			if codecs == nil {
-				return
-			}
-			var tmpCodec []JCodec
-			for _, codec := range codecs {
-				if codec.Type() != av.H264 && codec.Type() != av.PCM_ALAW && codec.Type() != av.PCM_MULAW && codec.Type() != av.OPUS {
-					log.Println("Codec Not Supported WebRTC ignore this track", codec.Type())
-					continue
-				}
-				if codec.Type().IsVideo() {
-					tmpCodec = append(tmpCodec, JCodec{Type: "video"})
-				} else {
-					tmpCodec = append(tmpCodec, JCodec{Type: "audio"})
-				}
-			}
-			b, err := json.Marshal(tmpCodec)
-			if err == nil {
-				_, err = c.Writer.Write(b)
-				if err != nil {
-					log.Println("Write Codec Info error", err)
-					return
-				}
-			}
-		}
-	})
+	router.GET("/", HTTPAPIServerIndex)
+	router.GET("/stream/player/:uuid", HTTPAPIServerStreamPlayer)
+	router.POST("/stream/receiver/:uuid", HTTPAPIServerStreamWebRTC)
+	router.GET("/stream/codec/:uuid", HTTPAPIServerStreamCodec)
+
 	router.StaticFS("/static", http.Dir("web/static"))
 	err := router.Run(Config.Server.HTTPPort)
 	if err != nil {
 		log.Fatalln("Start HTTP Server error", err)
+	}
+}
+
+//HTTPAPIServerIndex  index
+func HTTPAPIServerIndex(c *gin.Context) {
+	_, all := Config.list()
+	if len(all) > 0 {
+		c.Header("Cache-Control", "no-cache, max-age=0, must-revalidate, no-store")
+		c.Redirect(http.StatusMovedPermanently, "stream/player/"+all[0])
+	} else {
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"port":    Config.Server.HTTPPort,
+			"version": time.Now().String(),
+		})
+	}
+}
+
+//HTTPAPIServerStreamPlayer stream player
+func HTTPAPIServerStreamPlayer(c *gin.Context) {
+	_, all := Config.list()
+	sort.Strings(all)
+	c.HTML(http.StatusOK, "player.tmpl", gin.H{
+		"port":     Config.Server.HTTPPort,
+		"suuid":    c.Param("uuid"),
+		"suuidMap": all,
+		"version":  time.Now().String(),
+	})
+}
+
+//HTTPAPIServerStreamCodec stream codec
+func HTTPAPIServerStreamCodec(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	if Config.ext(c.Param("uuid")) {
+		Config.RunIFNotRun(c.Param("uuid"))
+		codecs := Config.coGe(c.Param("uuid"))
+		if codecs == nil {
+			return
+		}
+		var tmpCodec []JCodec
+		for _, codec := range codecs {
+			if codec.Type() != av.H264 && codec.Type() != av.PCM_ALAW && codec.Type() != av.PCM_MULAW && codec.Type() != av.OPUS {
+				log.Println("Codec Not Supported WebRTC ignore this track", codec.Type())
+				continue
+			}
+			if codec.Type().IsVideo() {
+				tmpCodec = append(tmpCodec, JCodec{Type: "video"})
+			} else {
+				tmpCodec = append(tmpCodec, JCodec{Type: "audio"})
+			}
+		}
+		b, err := json.Marshal(tmpCodec)
+		if err == nil {
+			_, err = c.Writer.Write(b)
+			if err != nil {
+				log.Println("Write Codec Info error", err)
+				return
+			}
+		}
 	}
 }
 

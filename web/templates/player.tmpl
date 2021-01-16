@@ -3,10 +3,10 @@
 <meta http-equiv="Last-Modified" content="0">
 <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<link rel="stylesheet" href="../static/css/bootstrap.min.css">
-<script type="text/javascript" src="../static/js/jquery-3.4.1.min.js"></script>
-<script src="../static/js/bootstrap.min.js"></script>
-<script src="../static/js/adapter-latest.js"></script>
+<link rel="stylesheet" href="../../static/css/bootstrap.min.css">
+<script type="text/javascript" src="../../static/js/jquery-3.4.1.min.js"></script>
+<script src="../../static/js/bootstrap.min.js"></script>
+<script src="../../static/js/adapter-latest.js"></script>
 
 <h2 align=center>
     Play Stream {{ .suuid }}
@@ -16,7 +16,7 @@
     <div class="col-3">
       <div class="list-group">
   {{ range .suuidMap }}
-    <a href="../player/{{ . }}" id="{{ . }}" name="{{ . }}" class="list-group-item list-group-item-action">{{ . }}</a>
+    <a href="{{ . }}" id="{{ . }}" name="{{ . }}" class="list-group-item list-group-item-action">{{ . }}</a>
   {{ end }}
 </div>
     </div>
@@ -33,5 +33,5 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="../static/js/app.js?ver={{ .version }}"></script>
+<script type="text/javascript" src="../../static/js/app.js?ver={{ .version }}"></script>
 </html>
