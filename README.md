@@ -53,17 +53,24 @@ format:
   },
   "streams": {
     "demo1": {
+      "on_demand" : false
       "url": "rtsp://170.93.143.139/rtplive/470011e600ef003a004ee33696235daa"
     },
     "demo2": {
-      "url": "rtsp://170.93.143.139/rtplive/470011e600ef003a004ee33696235daa"
+      "on_demand" : true
+      "url": "rtsp://admin:admin123@10.128.18.224/mpeg4"
     },
     "demo3": {
+      "on_demand" : false
       "url": "rtsp://170.93.143.139/rtplive/470011e600ef003a004ee33696235daa"
     }
   }
 }
 ```
+
+## Livestreams
+
+Use option ``` "on_demand": false ``` otherwise you will get choppy jerky streams and performance issues when multiple clients connect. 
 
 ## Limitations
 
