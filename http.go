@@ -37,6 +37,7 @@ func HTTPAPIServerIndex(c *gin.Context) {
 	_, all := Config.list()
 	if len(all) > 0 {
 		c.Header("Cache-Control", "no-cache, max-age=0, must-revalidate, no-store")
+		c.Header("Access-Control-Allow-Origin", "*")
 		c.Redirect(http.StatusMovedPermanently, "stream/player/"+all[0])
 	} else {
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
@@ -92,6 +93,7 @@ func HTTPAPIServerStreamCodec(c *gin.Context) {
 
 //HTTPAPIServerStreamWebRTC stream video over WebRTC
 func HTTPAPIServerStreamWebRTC(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
 	if !Config.ext(c.PostForm("suuid")) {
 		log.Println("Stream Not Found")
 		return
