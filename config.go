@@ -32,12 +32,14 @@ type ServerST struct {
 
 //StreamST struct
 type StreamST struct {
-	URL      string `json:"url"`
-	Status   bool   `json:"status"`
-	OnDemand bool   `json:"on_demand"`
-	RunLock  bool   `json:"-"`
-	Codecs   []av.CodecData
-	Cl       map[string]viewer
+	URL          string `json:"url"`
+	Status       bool   `json:"status"`
+	OnDemand     bool   `json:"on_demand"`
+	DisableAudio bool   `json:"disable_audio"`
+	Debug        bool   `json:"debug"`
+	RunLock      bool   `json:"-"`
+	Codecs       []av.CodecData
+	Cl           map[string]viewer
 }
 
 type viewer struct {
@@ -51,7 +53,7 @@ func (element *ConfigST) RunIFNotRun(uuid string) {
 		if tmp.OnDemand && !tmp.RunLock {
 			tmp.RunLock = true
 			element.Streams[uuid] = tmp
-			go RTSPWorkerLoop(uuid, tmp.URL, tmp.OnDemand)
+			go RTSPWorkerLoop(uuid, tmp.URL, tmp.OnDemand, tmp.DisableAudio, tmp.Debug)
 		}
 	}
 }
