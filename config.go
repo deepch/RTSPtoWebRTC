@@ -9,6 +9,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/deepch/vdk/codec/h264parser"
+
 	"github.com/deepch/vdk/av"
 )
 
@@ -147,6 +149,21 @@ func (element *ConfigST) coGe(suuid string) []av.CodecData {
 			return nil
 		}
 		if tmp.Codecs != nil {
+			//TODO Delete test
+			for _, codec := range tmp.Codecs {
+				if codec.Type() == av.H264 {
+					codecVideo := codec.(h264parser.CodecData)
+					if codecVideo.SPS() != nil && codecVideo.PPS() != nil && len(codecVideo.SPS()) > 0 && len(codecVideo.PPS()) > 0 {
+						//ok
+						//log.Println("Ok Video Ready to play")
+					} else {
+						//video codec not ok
+						log.Println("Bad Video Codec SPS or PPS Wait")
+						time.Sleep(50 * time.Millisecond)
+						continue
+					}
+				}
+			}
 			return tmp.Codecs
 		}
 		time.Sleep(50 * time.Millisecond)
