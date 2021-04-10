@@ -8,6 +8,8 @@ github.com/deepch/vdk v0.0.0-20210215224601-dd938d5e1108 h1:9hcpa8o/j2i0KL2DiYxo
 github.com/deepch/vdk v0.0.0-20210215224601-dd938d5e1108/go.mod h1:EZi580zgIZQOVwMcApOE/rTxuWCHvP/9yAFkUro14LI=
 github.com/deepch/vdk v0.0.0-20210218105644-f6de3acad035 h1:bbP1aKQfKCIpW9G/11Qw6Cx2UpdosxWwF91mOau0ZTQ=
 github.com/deepch/vdk v0.0.0-20210218105644-f6de3acad035/go.mod h1:EZi580zgIZQOVwMcApOE/rTxuWCHvP/9yAFkUro14LI=
+github.com/deepch/vdk v0.0.0-20210410074645-9f799014f4d4 h1:Pc+bqHHkqkcUJoml+KdqFwou5yVeZc/NRFOEl1aqTzs=
+github.com/deepch/vdk v0.0.0-20210410074645-9f799014f4d4/go.mod h1:EZi580zgIZQOVwMcApOE/rTxuWCHvP/9yAFkUro14LI=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/fsnotify/fsnotify v1.4.9/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=
 github.com/gin-contrib/sse v0.1.0 h1:Y/yl/+YNO8GZSjAhjMsSuLt29uWRFHdHYUb5lYOV9qE=

@@ -61,7 +61,6 @@ func RTSPWorker(name, url string, OnDemand, DisableAudio, Debug bool) error {
 		case <-keyTest.C:
 			return ErrorStreamExitNoVideoOnStream
 		case signals := <-RTSPClient.Signals:
-			log.Println("RTSP Signal")
 			switch signals {
 			case rtspv2.SignalCodecUpdate:
 				Config.coAd(name, RTSPClient.CodecData)
