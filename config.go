@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/rand"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -101,16 +102,26 @@ func (element *ConfigST) GetWebRTCPortMax() uint16 {
 func loadConfig() *ConfigST {
 	var tmp ConfigST
 	data, err := ioutil.ReadFile("config.json")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	err = json.Unmarshal(data, &tmp)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	for i, v := range tmp.Streams {
-		v.Cl = make(map[string]viewer)
-		tmp.Streams[i] = v
+	if err == nil {
+		err = json.Unmarshal(data, &tmp)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		for i, v := range tmp.Streams {
+			v.Cl = make(map[string]viewer)
+			tmp.Streams[i] = v
+		}
+	} else {
+		addr := flag.String("listen", "localhost:8083", "HTTP host and port")
+		udpMin := flag.Int("udp_min", 50000, "WebRTC UDP port min")
+		udpMax := flag.Int("udp_max", 50009, "WebRTC UDP port max")
+		flag.Parse()
+
+		tmp.Server.HTTPPort = *addr
+		tmp.Server.WebRTCPortMin = uint16(*udpMin)
+		tmp.Server.WebRTCPortMax = uint16(*udpMax)
+
+		tmp.Streams = make(map[string]StreamST)
 	}
 	return &tmp
 }
