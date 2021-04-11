@@ -120,6 +120,7 @@ func loadConfig() *ConfigST {
 		tmp.Server.HTTPPort = *addr
 		tmp.Server.WebRTCPortMin = uint16(*udpMin)
 		tmp.Server.WebRTCPortMax = uint16(*udpMax)
+		tmp.Server.ICEServers = []string{"stun:stun.l.google.com:19302"}
 
 		tmp.Streams = make(map[string]StreamST)
 	}
