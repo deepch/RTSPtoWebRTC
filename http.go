@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"sort"
 	"time"
 
@@ -18,10 +19,14 @@ type JCodec struct {
 }
 
 func serveHTTP() {
+	gin.SetMode(gin.ReleaseMode)
+
 	router := gin.Default()
-	router.LoadHTMLGlob("web/templates/*")
-	router.GET("/", HTTPAPIServerIndex)
-	router.GET("/stream/player/:uuid", HTTPAPIServerStreamPlayer)
+	if _, err := os.Stat("web"); os.IsExist(err) {
+		router.LoadHTMLGlob("web/templates/*")
+		router.GET("/", HTTPAPIServerIndex)
+		router.GET("/stream/player/:uuid", HTTPAPIServerStreamPlayer)
+	}
 	router.POST("/stream/receiver/:uuid", HTTPAPIServerStreamWebRTC)
 	router.GET("/stream/codec/:uuid", HTTPAPIServerStreamCodec)
 	router.POST("/stream", HTTPAPIServerStreamWebRTC2)
