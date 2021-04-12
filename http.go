@@ -22,7 +22,7 @@ func serveHTTP() {
 	gin.SetMode(gin.ReleaseMode)
 
 	router := gin.Default()
-	if _, err := os.Stat("web"); os.IsExist(err) {
+	if _, err := os.Stat("./web"); !os.IsNotExist(err) {
 		router.LoadHTMLGlob("web/templates/*")
 		router.GET("/", HTTPAPIServerIndex)
 		router.GET("/stream/player/:uuid", HTTPAPIServerStreamPlayer)
