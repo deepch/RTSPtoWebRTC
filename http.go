@@ -108,7 +108,7 @@ func HTTPAPIServerStreamWebRTC(c *gin.Context) {
 	if len(codecs) == 1 && codecs[0].Type().IsAudio() {
 		AudioOnly = true
 	}
-	muxerWebRTC := webrtc.NewMuxer(webrtc.Options{ICEServers: Config.GetICEServers(), PortMin: Config.GetWebRTCPortMin(), PortMax: Config.GetWebRTCPortMax()})
+	muxerWebRTC := webrtc.NewMuxer(webrtc.Options{ICEServers: Config.GetICEServers(), ICEUsername: Config.GetICEUsername(), ICECredential: Config.GetICECredential(), PortMin: Config.GetWebRTCPortMin(), PortMax: Config.GetWebRTCPortMax()})
 	answer, err := muxerWebRTC.WriteHeader(codecs, c.PostForm("data"))
 	if err != nil {
 		log.Println("WriteHeader", err)

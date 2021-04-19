@@ -4,6 +4,8 @@ let suuid = $('#suuid').val();
 
 let config = {
   iceServers: [{
+    //username: "",
+    //credential: "",
     urls: ["stun:stun.l.google.com:19302"]
   }]
 };
