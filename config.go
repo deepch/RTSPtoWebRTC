@@ -126,15 +126,18 @@ func loadConfig() *ConfigST {
 			tmp.Streams[i] = v
 		}
 	} else {
-		addr := flag.String("listen", "localhost:8083", "HTTP host and port")
-		udpMin := flag.Int("udp_min", 50000, "WebRTC UDP port min")
-		udpMax := flag.Int("udp_max", 50009, "WebRTC UDP port max")
+		addr := flag.String("listen", "8083", "HTTP host:port")
+		udpMin := flag.Int("udp_min", 0, "WebRTC UDP port min")
+		udpMax := flag.Int("udp_max", 0, "WebRTC UDP port max")
+		iceServer := flag.String("ice_server", "", "ICE Server")
 		flag.Parse()
 
 		tmp.Server.HTTPPort = *addr
 		tmp.Server.WebRTCPortMin = uint16(*udpMin)
 		tmp.Server.WebRTCPortMax = uint16(*udpMax)
-		tmp.Server.ICEServers = []string{"stun:stun.l.google.com:19302"}
+		if len(*iceServer) > 0 {
+			tmp.Server.ICEServers = []string{*iceServer}
+		}
 
 		tmp.Streams = make(map[string]StreamST)
 	}
