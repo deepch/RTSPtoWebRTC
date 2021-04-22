@@ -22,6 +22,8 @@ func serveHTTP() {
 	gin.SetMode(gin.ReleaseMode)
 
 	router := gin.Default()
+	router.Use(CORSMiddleware())
+	
 	if _, err := os.Stat("./web"); !os.IsNotExist(err) {
 		router.LoadHTMLGlob("web/templates/*")
 		router.GET("/", HTTPAPIServerIndex)
@@ -67,7 +69,6 @@ func HTTPAPIServerStreamPlayer(c *gin.Context) {
 
 //HTTPAPIServerStreamCodec stream codec
 func HTTPAPIServerStreamCodec(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*")
 	if Config.ext(c.Param("uuid")) {
 		Config.RunIFNotRun(c.Param("uuid"))
 		codecs := Config.coGe(c.Param("uuid"))
@@ -99,7 +100,6 @@ func HTTPAPIServerStreamCodec(c *gin.Context) {
 
 //HTTPAPIServerStreamWebRTC stream video over WebRTC
 func HTTPAPIServerStreamWebRTC(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "*")
 	if !Config.ext(c.PostForm("suuid")) {
 		log.Println("Stream Not Found")
 		return
@@ -114,7 +114,7 @@ func HTTPAPIServerStreamWebRTC(c *gin.Context) {
 	if len(codecs) == 1 && codecs[0].Type().IsAudio() {
 		AudioOnly = true
 	}
-	muxerWebRTC := webrtc.NewMuxer(webrtc.Options{ICEServers: Config.GetICEServers(), PortMin: Config.GetWebRTCPortMin(), PortMax: Config.GetWebRTCPortMax()})
+	muxerWebRTC := webrtc.NewMuxer(webrtc.Options{ICEServers: Config.GetICEServers(), ICEUsername: Config.GetICEUsername(), ICECredential: Config.GetICECredential(), PortMin: Config.GetWebRTCPortMin(), PortMax: Config.GetWebRTCPortMax()})
 	answer, err := muxerWebRTC.WriteHeader(codecs, c.PostForm("data"))
 	if err != nil {
 		log.Println("WriteHeader", err)
@@ -152,6 +152,23 @@ func HTTPAPIServerStreamWebRTC(c *gin.Context) {
 			}
 		}
 	}()
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Credentials", "true")
+		c.Header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token")
+		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Cache-Control, Content-Language, Content-Type")
+		c.Header("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusNoContent)
+			return
+		}
+
+		c.Next()
+	}
 }
 
 type Response struct {

@@ -29,6 +29,8 @@ type ConfigST struct {
 type ServerST struct {
 	HTTPPort      string   `json:"http_port"`
 	ICEServers    []string `json:"ice_servers"`
+	ICEUsername   string   `json:"ice_username"`
+	ICECredential string   `json:"ice_credential"`
 	WebRTCPortMin uint16   `json:"webrtc_port_min"`
 	WebRTCPortMax uint16   `json:"webrtc_port_max"`
 }
@@ -85,6 +87,18 @@ func (element *ConfigST) GetICEServers() []string {
 	element.mutex.Lock()
 	defer element.mutex.Unlock()
 	return element.Server.ICEServers
+}
+
+func (element *ConfigST) GetICEUsername() string {
+	element.mutex.Lock()
+	defer element.mutex.Unlock()
+	return element.Server.ICEUsername
+}
+
+func (element *ConfigST) GetICECredential() string {
+	element.mutex.Lock()
+	defer element.mutex.Unlock()
+	return element.Server.ICECredential
 }
 
 func (element *ConfigST) GetWebRTCPortMin() uint16 {
