@@ -176,6 +176,10 @@ type Response struct {
 	Sdp64  string   `json:"sdp64"`
 }
 
+type ResponseError struct {
+	Error  string   `json:"error"`
+}
+
 func HTTPAPIServerStreamWebRTC2(c *gin.Context) {
 	url := c.PostForm("url")
 	if _, ok := Config.Streams[url]; !ok {
@@ -191,6 +195,7 @@ func HTTPAPIServerStreamWebRTC2(c *gin.Context) {
 	codecs := Config.coGe(url)
 	if codecs == nil {
 		log.Println("Stream Codec Not Found")
+		c.JSON(500, ResponseError{Error: Config.LastError.Error()})
 		return
 	}
 
@@ -206,6 +211,7 @@ func HTTPAPIServerStreamWebRTC2(c *gin.Context) {
 	answer, err := muxerWebRTC.WriteHeader(codecs, sdp64)
 	if err != nil {
 		log.Println("Muxer WriteHeader", err)
+		c.JSON(500, ResponseError{Error: err.Error()})
 		return
 	}
 
