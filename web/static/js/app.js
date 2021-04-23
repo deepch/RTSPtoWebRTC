@@ -1,11 +1,8 @@
 let stream = new MediaStream();
-let dataChanellPingInterval=null;
 let suuid = $('#suuid').val();
 
 let config = {
   iceServers: [{
-    //username: "",
-    //credential: "",
     urls: ["stun:stun.l.google.com:19302"]
   }]
 };
@@ -49,23 +46,6 @@ function getCodecInfo() {
           'direction': 'sendrecv'
         })
       })
-      //send ping becouse PION not handle RTCSessionDescription.close()
-      sendChannel = pc.createDataChannel('foo');
-      sendChannel.onclose = () => {
-        if(dataChanellPingInterval!=null){
-          clearInterval(dataChanellPingInterval);
-          dataChanellPingInterval=null;
-        }
-        console.log('sendChannel has closed');
-      }
-      sendChannel.onopen = () => {
-        console.log('sendChannel has opened');
-        sendChannel.send('ping');
-        dataChanellPingInterval=setInterval(() => {
-          sendChannel.send('ping');
-        }, 1000)
-      }
-      sendChannel.onmessage = e => log(`Message from DataChannel '${sendChannel.label}' payload '${e.data}'`);
     }
   });
 }
