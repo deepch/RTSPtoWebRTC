@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/rand"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -22,6 +23,7 @@ type ConfigST struct {
 	mutex   sync.RWMutex
 	Server  ServerST            `json:"server"`
 	Streams map[string]StreamST `json:"streams"`
+	LastError error
 }
 
 //ServerST struct
@@ -115,16 +117,30 @@ func (element *ConfigST) GetWebRTCPortMax() uint16 {
 func loadConfig() *ConfigST {
 	var tmp ConfigST
 	data, err := ioutil.ReadFile("config.json")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	err = json.Unmarshal(data, &tmp)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	for i, v := range tmp.Streams {
-		v.Cl = make(map[string]viewer)
-		tmp.Streams[i] = v
+	if err == nil {
+		err = json.Unmarshal(data, &tmp)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		for i, v := range tmp.Streams {
+			v.Cl = make(map[string]viewer)
+			tmp.Streams[i] = v
+		}
+	} else {
+		addr := flag.String("listen", "8083", "HTTP host:port")
+		udpMin := flag.Int("udp_min", 0, "WebRTC UDP port min")
+		udpMax := flag.Int("udp_max", 0, "WebRTC UDP port max")
+		iceServer := flag.String("ice_server", "", "ICE Server")
+		flag.Parse()
+
+		tmp.Server.HTTPPort = *addr
+		tmp.Server.WebRTCPortMin = uint16(*udpMin)
+		tmp.Server.WebRTCPortMax = uint16(*udpMax)
+		if len(*iceServer) > 0 {
+			tmp.Server.ICEServers = []string{*iceServer}
+		}
+
+		tmp.Streams = make(map[string]StreamST)
 	}
 	return &tmp
 }
