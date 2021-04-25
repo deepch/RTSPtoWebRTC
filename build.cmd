@@ -22,5 +22,5 @@ go build -ldflags "-s -w" -o bin/rtsp2webrtc_armv7
 go build -ldflags "-s -w" -o bin/rtsp2webrtc_aarch64
 
 @SET GOOS=darwin
-@SET GOARCH=arm64
+@SET GOARCH=amd64
 go build -ldflags "-s -w" -o bin/rtsp2webrtc_darwin
