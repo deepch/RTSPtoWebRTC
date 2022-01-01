@@ -5,7 +5,7 @@ on:
     types: [published]
 
 env:
-  # Currently assumes same username / repot on both github and docker
+  # Currently assumes same username / repo on both github and docker
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
 
