@@ -1,9 +1,7 @@
 {
   "server": {
     "http_port": ":8083",
-    "ice_servers": ["stun:stun.l.google.com:19302", "turn:sr11.ipeye.ru:3478?transport=udp"],
-    "ice_username": "admin",
-    "ice_credential": "admin"
+    "ice_servers": ["stun:stun.l.google.com:19302"]
   },
   "streams": {
     "H264_AAC": {
