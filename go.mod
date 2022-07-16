@@ -3,7 +3,7 @@ module github.com/deepch/RTSPtoWebRTC
 go 1.18
 
 require (
-	github.com/deepch/vdk v0.0.18
+	github.com/deepch/vdk v0.0.19
 	github.com/gin-gonic/gin v1.7.7
 )
 
