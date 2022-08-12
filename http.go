@@ -23,7 +23,7 @@ func serveHTTP() {
 
 	router := gin.Default()
 	router.Use(CORSMiddleware())
-	
+
 	if _, err := os.Stat("./web"); !os.IsNotExist(err) {
 		router.LoadHTMLGlob("web/templates/*")
 		router.GET("/", HTTPAPIServerIndex)
@@ -177,7 +177,7 @@ type Response struct {
 }
 
 type ResponseError struct {
-	Error  string   `json:"error"`
+	Error string `json:"error"`
 }
 
 func HTTPAPIServerStreamWebRTC2(c *gin.Context) {

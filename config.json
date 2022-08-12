@@ -7,7 +7,7 @@
     "H264_AAC": {
       "on_demand": false,
       "disable_audio": true,
-      "url": "rtsp://171.25.232.136/5090ea43a82340e0b6ee75a5c41e08c4"
+      "url": "rtsp://admin:admin@176.117.205.3:5541/video1"
     }
   }
 }
