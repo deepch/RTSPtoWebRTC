@@ -1545,11 +1545,6 @@ function removeAllowExtmapMixed(window) {
   }
   var nativeSRD = window.RTCPeerConnection.prototype.setRemoteDescription;
   window.RTCPeerConnection.prototype.setRemoteDescription = function setRemoteDescription(desc) {
-    if (desc && desc.sdp && desc.sdp.indexOf('\na=extmap-allow-mixed') !== -1) {
-      desc.sdp = desc.sdp.split('\n').filter(function (line) {
-        return line.trim() !== 'a=extmap-allow-mixed';
-      }).join('\n');
-    }
     return nativeSRD.apply(this, arguments);
   };
 }
