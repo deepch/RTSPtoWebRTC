@@ -58,9 +58,15 @@ function getRemoteSdp() {
     data: btoa(pc.localDescription.sdp)
   }, function(data) {
     try {
+    var desc = atob(data);
+    if (desc && desc.sdp && desc.sdp.indexOf('\na=extmap-allow-mixed') !== -1) {
+      desc.sdp = desc.sdp.split('\n').filter(function (line) {
+        return line.trim() !== 'a=extmap-allow-mixed';
+      }).join('\n');
+    }
       pc.setRemoteDescription(new RTCSessionDescription({
         type: 'answer',
-        sdp: atob(data)
+        sdp: desc
       }))
     } catch (e) {
       console.warn(e);
