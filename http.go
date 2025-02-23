@@ -40,7 +40,7 @@ func serveHTTP() {
 	}
 }
 
-//HTTPAPIServerIndex  index
+// HTTPAPIServerIndex  index
 func HTTPAPIServerIndex(c *gin.Context) {
 	_, all := Config.list()
 	if len(all) > 0 {
@@ -55,7 +55,7 @@ func HTTPAPIServerIndex(c *gin.Context) {
 	}
 }
 
-//HTTPAPIServerStreamPlayer stream player
+// HTTPAPIServerStreamPlayer stream player
 func HTTPAPIServerStreamPlayer(c *gin.Context) {
 	_, all := Config.list()
 	sort.Strings(all)
@@ -67,7 +67,7 @@ func HTTPAPIServerStreamPlayer(c *gin.Context) {
 	})
 }
 
-//HTTPAPIServerStreamCodec stream codec
+// HTTPAPIServerStreamCodec stream codec
 func HTTPAPIServerStreamCodec(c *gin.Context) {
 	if Config.ext(c.Param("uuid")) {
 		Config.RunIFNotRun(c.Param("uuid"))
@@ -98,7 +98,7 @@ func HTTPAPIServerStreamCodec(c *gin.Context) {
 	}
 }
 
-//HTTPAPIServerStreamWebRTC stream video over WebRTC
+// HTTPAPIServerStreamWebRTC stream video over WebRTC
 func HTTPAPIServerStreamWebRTC(c *gin.Context) {
 	if !Config.ext(c.PostForm("suuid")) {
 		log.Println("Stream Not Found")
@@ -157,6 +157,15 @@ func HTTPAPIServerStreamWebRTC(c *gin.Context) {
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
+		origin := c.Request.Header.Get("Origin")
+		if origin != "" {
+			for _, domain := range Config.GetCrossOriginDomains() {
+				if domain == origin {
+					c.Header("Access-Control-Allow-Origin", origin)
+					break
+				}
+			}
+		}
 		c.Header("Access-Control-Allow-Credentials", "true")
 		c.Header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-access-token")
 		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Cache-Control, Content-Language, Content-Type")

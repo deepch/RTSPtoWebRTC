@@ -2,3 +2,6 @@
 .idea/
 
 bin/
+
+# Editor directories
+.vscode
